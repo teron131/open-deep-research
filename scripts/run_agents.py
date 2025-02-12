@@ -33,9 +33,7 @@ def get_single_file_description(file_path: str, question: str, visual_inspection
     file_extension = file_path.split(".")[-1]
     if file_extension in ["png", "jpg", "jpeg"]:
         file_description = f" - Attached image: {file_path}"
-        file_description += (
-            f"\n     -> Image description: {get_image_description(file_path, question, visual_inspection_tool)}"
-        )
+        file_description += f"\n     -> Image description: {get_image_description(file_path, question, visual_inspection_tool)}"
         return file_description
     elif file_extension in ["pdf", "xls", "xlsx", "docx", "doc", "xml"]:
         file_description = f" - Attached document: {file_path}"

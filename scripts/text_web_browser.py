@@ -12,11 +12,14 @@ from urllib.parse import unquote, urljoin, urlparse
 import pathvalidate
 import requests
 from serpapi import GoogleSearch
-
 from smolagents import Tool
 
 from .cookies import COOKIES
-from .mdconvert import FileConversionException, MarkdownConverter, UnsupportedFormatException
+from .mdconvert import (
+    FileConversionException,
+    MarkdownConverter,
+    UnsupportedFormatException,
+)
 
 
 class SimpleTextBrowser:
@@ -62,11 +65,7 @@ class SimpleTextBrowser:
         elif uri_or_path.startswith("google:"):
             self._serpapi_search(uri_or_path[len("google:") :].strip(), filter_year=filter_year)
         else:
-            if (
-                not uri_or_path.startswith("http:")
-                and not uri_or_path.startswith("https:")
-                and not uri_or_path.startswith("file:")
-            ):
+            if not uri_or_path.startswith("http:") and not uri_or_path.startswith("https:") and not uri_or_path.startswith("file:"):
                 if len(self.history) > 1:
                     prior_address = self.history[-2][0]
                     uri_or_path = urljoin(prior_address, uri_or_path)
@@ -220,9 +219,7 @@ class SimpleTextBrowser:
             raise Exception(f"No results found for query: '{query}'. Use a less specific query.")
         if len(results["organic_results"]) == 0:
             year_filter_message = f" with filter year={filter_year}" if filter_year is not None else ""
-            self._set_page_content(
-                f"No results found for '{query}'{year_filter_message}. Try with a more general query, or remove the year filter."
-            )
+            self._set_page_content(f"No results found for '{query}'{year_filter_message}. Try with a more general query, or remove the year filter.")
             return
 
         def _prev_visit(url):
@@ -253,10 +250,7 @@ class SimpleTextBrowser:
                 redacted_version = redacted_version.replace("Your browser can't play this video.", "")
                 web_snippets.append(redacted_version)
 
-        content = (
-            f"A Google search for '{query}' found {len(web_snippets)} results:\n\n## Web Results\n"
-            + "\n\n".join(web_snippets)
-        )
+        content = f"A Google search for '{query}' found {len(web_snippets)} results:\n\n## Web Results\n" + "\n\n".join(web_snippets)
 
         self._set_page_content(content)
 
@@ -473,12 +467,7 @@ class ArchiveSearchTool(Tool):
         target_url = closest["url"]
         self.browser.visit_page(target_url)
         header, content = self.browser._state()
-        return (
-            f"Web archive for url {url}, snapshot taken at date {closest['timestamp'][:8]}:\n"
-            + header.strip()
-            + "\n=======================\n"
-            + content
-        )
+        return f"Web archive for url {url}, snapshot taken at date {closest['timestamp'][:8]}:\n" + header.strip() + "\n=======================\n" + content
 
 
 class PageUpTool(Tool):
@@ -499,9 +488,7 @@ class PageUpTool(Tool):
 
 class PageDownTool(Tool):
     name = "page_down"
-    description = (
-        "Scroll the viewport DOWN one page-length in the current webpage and return the new viewport content."
-    )
+    description = "Scroll the viewport DOWN one page-length in the current webpage and return the new viewport content."
     inputs = {}
     output_type = "string"
 
@@ -535,10 +522,7 @@ class FinderTool(Tool):
         header, content = self.browser._state()
 
         if find_result is None:
-            return (
-                header.strip()
-                + f"\n=======================\nThe search string '{search_string}' was not found on this page."
-            )
+            return header.strip() + f"\n=======================\nThe search string '{search_string}' was not found on this page."
         else:
             return header.strip() + "\n=======================\n" + content
 
